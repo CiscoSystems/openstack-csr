@@ -42,7 +42,8 @@ instance = {'uuid': vm_uuid}
 mapping = {'vif_uuid': port_id,
            'mac': mac_addr}
 network = {}
-vif = [network, mapping]
+network = {'bridge': 'br-int'}
+vif = {'id': port_id, 'address': mac_addr, 'network': network}
 
 driver = vif_driver.LibvirtHybridOVSBridgeDriver({})
 driver.unplug(instance, vif)

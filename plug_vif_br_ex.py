@@ -5,14 +5,14 @@ import sys
 from oslo.config import cfg
 import neutron.openstack.common.gettextutils as gtutil
 gtutil.install('')
-from neutron.openstack.common import log as logging
+# from neutron.openstack.common import log as logging
 import neutron.agent.linux.interface as vif_driver
 from quantumclient.quantum import client as qclient
 import quantumclient.common.exceptions as qcexp
 from quantum.api.v2 import attributes
 from neutron.agent.common import config
 
-LOG = logging.getLogger(__name__)
+# LOG = logging.getLogger(__name__)
 
 # Arg 1: controller host
 # Arg 2: name of admin user

@@ -2,6 +2,7 @@
 
 import sys
 
+from oslo.config import cfg
 import neutron.openstack.common.gettextutils as gtutil
 gtutil.install('')
 from neutron.openstack.common import log as logging
