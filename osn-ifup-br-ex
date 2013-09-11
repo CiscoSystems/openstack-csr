@@ -1,0 +1,19 @@
+#!/bin/bash
+
+source config.ini
+
+/sbin/ifconfig $1 0.0.0.0 up
+if_mac=`ifconfig $1 | awk '{ if ($4 == "HWaddr") print $5 }'`
+info_str=`./plug_vif_br_ex.py localhost <USER> <PASSWORD> <TENANT_NAME> ${UUID} ${if_mac} $1`
+if [ "$info_str" == "" ]; then
+   echo "VIF plugging failed! Exiting ..." >&2
+   exit 1
+fi
+
+# Write for file for later clean-up by osn-ifdown
+echo "$1 ${if_mac} ${UUID} $info_str" >> .instance_info
+
+IFS=' ' read -a info <<< "$info_str"
+switch=${info[0]}
+echo "Plugging interface: $1 into switch: ${switch}"
+brctl addif ${switch} $1

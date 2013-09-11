@@ -1,0 +1,15 @@
+#!/bin/bash
+
+source config.ini
+
+if [ ! -f .instance_info ]; then
+   exit 0
+fi
+
+info_str=`cat .instance_info | awk -v itfc=$1 '{ if ($1 == itfc) print $0 }'`
+IFS=' ' read -a info <<< "$info_str"
+
+echo "Un-plugging interface: $1 from switch: ${info[3]}"
+brctl delif ${info[3]} $1
+./unplug_vif.py localhost <USER> <PASSWORD> $info_str
+/sbin/ifconfig $1 0.0.0.0 down
