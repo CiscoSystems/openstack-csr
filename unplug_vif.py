@@ -9,7 +9,6 @@ import nova.virt.libvirt.vif as vif_driver
 from nova.network import linux_net
 from quantumclient.quantum import client as qclient
 import quantumclient.common.exceptions as qcexp
-from quantum.api.v2 import attributes
 
 LOG = logging.getLogger(__name__)
 
