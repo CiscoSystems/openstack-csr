@@ -9,7 +9,7 @@ from neutron.openstack.common import log as logging
 import neutron.agent.linux.interface as vif_driver
 from quantumclient.quantum import client as qclient
 import quantumclient.common.exceptions as qcexp
-from quantum.api.v2 import attributes
+from neutron.agent.common import config
 
 LOG = logging.getLogger(__name__)
 
@@ -40,6 +40,10 @@ port_id = sys.argv[9]
 nw_id = sys.argv[12]
 
 br_name = 'br-ex'
+
+conf = cfg.CONF
+config.register_root_helper(conf)
+conf.register_opts(vif_driver.OPTS)
 
 driver = vif_driver.OVSInterfaceDriver(cfg.CONF)
 driver.unplug(interface, br_name)

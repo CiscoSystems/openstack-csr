@@ -9,7 +9,6 @@ gtutil.install('')
 import neutron.agent.linux.interface as vif_driver
 from quantumclient.quantum import client as qclient
 import quantumclient.common.exceptions as qcexp
-from quantum.api.v2 import attributes
 from neutron.agent.common import config
 
 # LOG = logging.getLogger(__name__)
