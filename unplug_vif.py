@@ -46,8 +46,8 @@ network = {'bridge': 'br-int'}
 vif = {'id': port_id, 'address': mac_addr, 'network': network}
 
 driver = vif_driver.LibvirtHybridOVSBridgeDriver({})
-print "Unplugging %{inst}s for port %{port}s (%{mac}s) on "
-    "br-int" % {'inst': vm_uuid, 'port': port_id, 'mac': mac_addr}
+print ("Unplugging %{inst}s for port %{port}s (%{mac}s) on br-int" % 
+       {'inst': vm_uuid, 'port': port_id, 'mac': mac_addr})
 driver.unplug(instance, vif)
 
 KEYSTONE_URL='http://' + host + ':5000/v2.0'
