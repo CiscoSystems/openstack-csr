@@ -7,9 +7,9 @@ gtutil.install('')
 # from nova.openstack.common import log as logging
 import nova.virt.libvirt.vif as vif_driver
 from nova.network import linux_net
-from quantumclient.quantum import client as qclient
-import quantumclient.common.exceptions as qcexp
-# from quantum.api.v2 import attributes
+from neutronclient.neutron import client as qclient
+import neutronclient.common.exceptions as qcexp
+# from neutron.api.v2 import attributes
 
 # LOG = logging.getLogger(__name__)
 
@@ -41,7 +41,7 @@ prefix, net_name = interface.split('__')
 port_name = net_name + '_p'
 try:
     nw_id = qc.list_networks(name=net_name)['networks'][0]['id']
-except qcexp.QuantumClientException as e:
+except qcexp.NeutronClientException as e:
     print >> sys.stderr, e
     exit(1)
 
@@ -54,7 +54,7 @@ p_spec = {'port': {'admin_state_up': True,
 
 try:
     port = qc.create_port(p_spec)
-except qcexp.QuantumClientException as e:
+except qcexp.NeutronClientException as e:
     print >> sys.stderr, e
     exit(1)
 

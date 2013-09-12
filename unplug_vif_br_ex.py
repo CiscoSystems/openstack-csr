@@ -7,8 +7,8 @@ import neutron.openstack.common.gettextutils as gtutil
 gtutil.install('')
 #from neutron.openstack.common import log as logging
 import neutron.agent.linux.interface as vif_driver
-from quantumclient.quantum import client as qclient
-import quantumclient.common.exceptions as qcexp
+from neutronclient.neutron import client as qclient
+import neutronclient.common.exceptions as qcexp
 from neutron.agent.common import config
 
 #LOG = logging.getLogger(__name__)
@@ -57,6 +57,6 @@ tenant_name=tenant, password=pw)
 try:
    qc.delete_port(port_id)
    print "Deleted port %s from Neutron" % port_id
-except qcexp.QuantumClientException as qce:
+except qcexp.NeutronClientException as qce:
    print "Failed to delete port %s: %s" % (port_id, qce)
    pass
