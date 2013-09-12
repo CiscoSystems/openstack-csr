@@ -7,9 +7,9 @@ if [ -f .instance_info ]; then
    rm .instance_info
 fi
 
-IFNAME_ETH0=$NAME"__public"
-IFNAME_ETH1=$NAME"__private"
-# You add interfaces on additional networks
+IFNAME_ETH0=$NAME"__private"
+IFNAME_ETH1=$NAME"__public"
+# You add interfaces on aditional networks
 # by specifying an IFNAME_ETHx line. The
 # word following the '__' is the name of the
 # Neutron network.
@@ -26,9 +26,9 @@ kvm -m 8192 -name $NAME \
 -smp 4 \
 -serial telnet:$TELNET_ACCESS,server,nowait \
 -net nic,macaddr=$MACADDR_ETH0,model=e1000,vlan=0 \
--net tap,ifname=$IFNAME_ETH0,vlan=0,script=osn-ifup-br-ex,downscript=osn-ifdown-br-ex \
+-net tap,ifname=$IFNAME_ETH0,vlan=0,script=osn-ifup-br-int,downscript=osn-ifdown-br-int \
 -net nic,macaddr=$MACADDR_ETH1,model=e1000,vlan=1 \
--net tap,ifname=$IFNAME_ETH1,vlan=1,script=osn-ifup-br-int,downscript=osn-ifdown-br-int \
+-net tap,ifname=$IFNAME_ETH1,vlan=1,script=osn-ifup-br-ex,downscript=osn-ifdown-br-ex \
 -drive file=$IMAGE \
 -boot c \
 -vga cirrus \

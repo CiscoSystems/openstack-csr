@@ -5,13 +5,13 @@ import sys
 from oslo.config import cfg
 import neutron.openstack.common.gettextutils as gtutil
 gtutil.install('')
-from neutron.openstack.common import log as logging
+#from neutron.openstack.common import log as logging
 import neutron.agent.linux.interface as vif_driver
 from quantumclient.quantum import client as qclient
 import quantumclient.common.exceptions as qcexp
 from neutron.agent.common import config
 
-LOG = logging.getLogger(__name__)
+#LOG = logging.getLogger(__name__)
 
 # Arg 1: controller host
 # Arg 2: name of admin user
@@ -36,7 +36,7 @@ tenant = sys.argv[4]
 interface = sys.argv[5]
 mac_addr = sys.argv[6]
 vm_uuid = sys.argv[7]
-port_id = sys.argv[9]
+port_id = sys.argv[10]
 nw_id = sys.argv[12]
 
 br_name = 'br-ex'
@@ -46,6 +46,7 @@ config.register_root_helper(conf)
 conf.register_opts(vif_driver.OPTS)
 
 driver = vif_driver.OVSInterfaceDriver(cfg.CONF)
+print "Unplug %s for %s" % (interface, br_name)
 driver.unplug(interface, br_name)
 
 KEYSTONE_URL='http://' + host + ':5000/v2.0'
@@ -55,5 +56,7 @@ tenant_name=tenant, password=pw)
 
 try:
    qc.delete_port(port_id)
-except qcexp.QuantumClientException:
+   print "Deleted port %s from Neutron" % port_id
+except qcexp.QuantumClientException as qce:
+   print "Failed to delete port %s: %s" % (port_id, qce)
    pass

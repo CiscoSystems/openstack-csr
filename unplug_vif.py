@@ -4,13 +4,13 @@ import sys
 
 import nova.openstack.common.gettextutils as gtutil
 gtutil.install('')
-from nova.openstack.common import log as logging
+# from nova.openstack.common import log as logging
 import nova.virt.libvirt.vif as vif_driver
 from nova.network import linux_net
 from quantumclient.quantum import client as qclient
 import quantumclient.common.exceptions as qcexp
 
-LOG = logging.getLogger(__name__)
+# LOG = logging.getLogger(__name__)
 
 # Arg 1: controller host
 # Arg 2: name of admin user
@@ -35,7 +35,7 @@ tenant = sys.argv[4]
 interface = sys.argv[5]
 mac_addr = sys.argv[6]
 vm_uuid = sys.argv[7]
-port_id = sys.argv[9]
+port_id = sys.argv[10]
 nw_id = sys.argv[12]
 
 instance = {'uuid': vm_uuid}
@@ -46,6 +46,8 @@ network = {'bridge': 'br-int'}
 vif = {'id': port_id, 'address': mac_addr, 'network': network}
 
 driver = vif_driver.LibvirtHybridOVSBridgeDriver({})
+print "Unplugging %{inst}s for port %{port}s (%{mac}s) on "
+    "br-int" % {'inst': vm_uuid, 'port': port_id, 'mac': mac_addr}
 driver.unplug(instance, vif)
 
 KEYSTONE_URL='http://' + host + ':5000/v2.0'
@@ -55,5 +57,7 @@ tenant_name=tenant, password=pw)
 
 try:
    qc.delete_port(port_id)
-except qcexp.QuantumClientException:
+   print "Deleted port %s from Neutron" % port_id
+except qcexp.QuantumClientException as qce:
+   print "Failed to delete port %s: %s" % (port_id, qce)
    pass
