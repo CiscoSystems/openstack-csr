@@ -7,6 +7,7 @@ gtutil.install('')
 # from nova.openstack.common import log as logging
 import nova.virt.libvirt.vif as vif_driver
 from nova.network import linux_net
+from nova.network import model as network_model
 from neutronclient.neutron import client as qclient
 import neutronclient.common.exceptions as qcexp
 
@@ -43,9 +44,15 @@ mapping = {'vif_uuid': port_id,
            'mac': mac_addr}
 network = {}
 network = {'bridge': 'br-int'}
-vif = {'id': port_id, 'address': mac_addr, 'network': network}
+vif = {'id': port_id,
+       'address': mac_addr,
+       'network': network,
+       'type': network_model.VIF_TYPE_OVS}
 
-driver = vif_driver.LibvirtHybridOVSBridgeDriver({})
+# For OVS
+# driver = vif_driver.LibvirtHybridOVSBridgeDriver({})
+# For ML2
+driver = vif_driver.LibvirtGenericVIFDriver({})
 print ("Unplugging %(inst)s for port %(port)s (%(mac)s) on br-int" % 
        {'inst': vm_uuid, 'port': port_id, 'mac': mac_addr})
 driver.unplug(instance, vif)
