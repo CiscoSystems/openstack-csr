@@ -1,0 +1,4 @@
+#!/bin/sh
+switch='br-csr'
+/sbin/ifconfig $1 0.0.0.0 up
+ovs-vsctl -- --may-exist add-port ${switch} $1

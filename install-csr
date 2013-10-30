@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# YOU CHANGE SETTINGS IN THE 'config.ini' FILE.
+source config.ini
+
+# Create a blank image
+qemu-img create -f qcow2 $IMAGE 8G
+
+ovs-vsctl -- --if-exists del-br br-csr
+ovs-vsctl add-br br-csr
+
+IFNAME_ETH0=$NAME"tap0"
+IFNAME_ETH1=$NAME"tap1"
+IFNAME_ETH2=$NAME"tap2"
+
+echo "Booting $NAME on D for install"
+ 
+kvm -m 8192 -name $NAME \
+-smp 4 \
+-net nic,macaddr=$MACADDR_ETH0,model=e1000,vlan=0 \
+-net tap,ifname=$IFNAME_ETH0,vlan=0,script=ovs-ifup-eth0,downscript=ovs-ifdown-eth0 \
+-net nic,macaddr=$MACADDR_ETH1,model=e1000,vlan=1 \
+-net tap,ifname=$IFNAME_ETH1,vlan=1,script=ovs-ifup-eth0,downscript=ovs-ifdown-eth0 \
+-net nic,macaddr=$MACADDR_ETH2,model=e1000,vlan=2 \
+-net tap,ifname=$IFNAME_ETH2,vlan=2,script=ovs-ifup-eth0,downscript=ovs-ifdown-eth0 \
+-cdrom $ISO \
+-drive file=$IMAGE \
+-serial telnet:localhost:4444,server,nowait \
+-boot d \
+-vga cirrus \
+-vnc 14.0.3.33:0
