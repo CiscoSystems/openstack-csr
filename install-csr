@@ -9,9 +9,9 @@ qemu-img create -f qcow2 $IMAGE 8G
 ovs-vsctl -- --if-exists del-br br-csr
 ovs-vsctl add-br br-csr
 
-IFNAME_ETH0=$NAME"tap0"
-IFNAME_ETH1=$NAME"tap1"
-IFNAME_ETH2=$NAME"tap2"
+IFNAME_ETH0=$NAME$VERS"tap0"
+IFNAME_ETH1=$NAME$VERS"tap1"
+IFNAME_ETH2=$NAME$VERS"tap2"
 
 echo "Booting $NAME on D for install"
  

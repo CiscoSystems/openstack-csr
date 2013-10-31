@@ -3,9 +3,9 @@
 # YOU CHANGE SETTINGS IN THE 'config.ini' FILE.
 source config.ini
 
-IFNAME_ETH0=$NAME"tap0"
-IFNAME_ETH1=$NAME"tap1"
-IFNAME_ETH2=$NAME"tap2"
+IFNAME_ETH0=$NAME$VERS"tap0"
+IFNAME_ETH1=$NAME$VERS"tap1"
+IFNAME_ETH2=$NAME$VERS"tap2"
 
 echo "Booting $NAME on C"
  
