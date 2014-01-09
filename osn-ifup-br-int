@@ -6,7 +6,7 @@ source config.ini
 if_mac=`ifconfig $1 | awk '{ if ($4 == "HWaddr") print $5 }'`
 info_str=`./plug_vif.py localhost ${USER} ${PASSWORD} ${TENANT} ${UUID} ${if_mac} $1`
 if [ "$info_str" == "" ]; then
-   echo "VIF plugging failed! Exiting ..." >&2
+   echo "VIF plugging failed ($1)! Exiting ..." >&2
    exit 1
 fi
 
