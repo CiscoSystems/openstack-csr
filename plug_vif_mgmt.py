@@ -2,15 +2,13 @@
 
 import sys
 
-import nova.openstack.common.gettextutils as gtutil
+from oslo.config import cfg
+import neutron.openstack.common.gettextutils as gtutil
 gtutil.install('')
-# from nova.openstack.common import log as logging
-import nova.virt.libvirt.vif as vif_driver
-from nova.network import linux_net
-from nova.network import model as network_model
+import neutron.agent.linux.interface as vif_driver
 from neutronclient.neutron import client as qclient
 import neutronclient.common.exceptions as qcexp
-# from neutron.api.v2 import attributes
+from neutron.agent.common import config
 
 # LOG = logging.getLogger(__name__)
 
@@ -50,7 +48,6 @@ p_spec = {'port': {'admin_state_up': True,
                    'name': port_name,
                    'network_id': nw_id,
                    'mac_address': mac_addr,
-                   'binding:host_id': 'devstack-33', # TODO: Get the actual name
                    'device_id': vm_uuid,
                    'device_owner': 'compute:None'}}
 
@@ -61,20 +58,15 @@ except qcexp.NeutronClientException as e:
     exit(1)
 
 port_id = port['port']['id']
+br_name = 'br-int'
 
-instance = {'uuid': vm_uuid}
-network = {'bridge': 'br-int'}
-vif = {'id': port_id,
-       'address': mac_addr,
-       'network': network,
-       'type': network_model.VIF_TYPE_OVS}
+conf = cfg.CONF
+config.register_root_helper(conf)
+conf.register_opts(vif_driver.OPTS)
 
-# For OVS
-# driver = vif_driver.LibvirtHybridOVSBridgeDriver({})
-# For ML2 plugin
-driver = vif_driver.LibvirtGenericVIFDriver({})
-driver.plug(instance, vif)
+driver = vif_driver.OVSInterfaceDriver(cfg.CONF)
+driver.plug(nw_id, port_id, interface, mac_addr, br_name)
 
-br_name = driver.get_br_name(port_id)
+# br_name = driver.get_br_name(port_id)
 
 print br_name, port_name, port_id, net_name, nw_id

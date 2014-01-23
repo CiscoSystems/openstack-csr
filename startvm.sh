@@ -15,7 +15,7 @@ kvm -m 8192 -name $NAME \
 -smp 4 \
 -serial telnet:$TELNET_ACCESS,server,nowait \
 -net nic,macaddr=$MACADDR_ETH0,model=e1000,vlan=0 \
--net tap,ifname=$IFNAME_ETH0,vlan=0,script=osn-ifup-br-int,downscript=osn-ifdown-br-int \
+-net tap,ifname=$IFNAME_ETH0,vlan=0,script=osn-ifup-mgmt,downscript=osn-ifdown-mgmt \
 -net nic,macaddr=$MACADDR_ETH1,model=e1000,vlan=1 \
 -net tap,ifname=$IFNAME_ETH1,vlan=1,script=osn-ifup-br-ex,downscript=osn-ifdown-br-ex \
 -net nic,macaddr=$MACADDR_ETH2,model=e1000,vlan=2 \
