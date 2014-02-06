@@ -20,9 +20,6 @@ from neutron.agent.common import config
 # Arg 6: MAC address of tap interface
 # Arg 7: name of tap interface 
 
-#print 'Number of arguments:', len(sys.argv), 'arguments.'
-#print 'Argument List:', str(sys.argv)
-
 host = sys.argv[1]
 user = sys.argv[2]
 pw = sys.argv[3]
@@ -42,6 +39,8 @@ try:
     nw_id = qc.list_networks(name=net_name)['networks'][0]['id']
 except qcexp.NeutronClientException as e:
     print >> sys.stderr, e
+    print >> sys.stderr, 'Number of arguments:', len(sys.argv), 'arguments.'
+    print >> sys.stderr, 'Argument List:', str(sys.argv)
     exit(1)
 
 p_spec = {'port': {'admin_state_up': True,

@@ -11,5 +11,5 @@ IFS=' ' read -a info <<< "$info_str"
 
 echo "Un-plugging interface: $1 from switch: ${info[3]}"
 brctl delif ${info[3]} $1
-./unplug_vif_mgmt.py localhost ${USER} ${PASSWORD} ${TENANT} $info_str
+./unplug_vif_mgmt.py ${HOST} ${USER} ${PASSWORD} ${TENANT} $info_str
 /sbin/ifconfig $1 0.0.0.0 down
