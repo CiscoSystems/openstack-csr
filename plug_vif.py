@@ -1,16 +1,15 @@
 #!/usr/bin/python
 
+import socket
 import sys
 
 import nova.openstack.common.gettextutils as gtutil
 gtutil.install('')
-# from nova.openstack.common import log as logging
 import nova.virt.libvirt.vif as vif_driver
 from nova.network import linux_net
 from nova.network import model as network_model
 from neutronclient.neutron import client as qclient
 import neutronclient.common.exceptions as qcexp
-# from neutron.api.v2 import attributes
 
 # LOG = logging.getLogger(__name__)
 
@@ -45,11 +44,12 @@ except qcexp.NeutronClientException as e:
     print >> sys.stderr, 'Argument List:', str(sys.argv)
     exit(1)
 
+hostname = socket.gethostname()
 p_spec = {'port': {'admin_state_up': True,
                    'name': port_name,
                    'network_id': nw_id,
                    'mac_address': mac_addr,
-                   'binding:host_id': 'devstack-33', # TODO: Get the actual name
+                   'binding:host_id': hostname,
                    'device_id': vm_uuid,
                    'device_owner': 'compute:None'}}
 

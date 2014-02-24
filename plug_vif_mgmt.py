@@ -10,8 +10,6 @@ from neutronclient.neutron import client as qclient
 import neutronclient.common.exceptions as qcexp
 from neutron.agent.common import config
 
-# LOG = logging.getLogger(__name__)
-
 # Arg 1: controller host
 # Arg 2: name of admin user
 # Arg 3: admin user password
@@ -65,7 +63,5 @@ conf.register_opts(vif_driver.OPTS)
 
 driver = vif_driver.OVSInterfaceDriver(cfg.CONF)
 driver.plug(nw_id, port_id, interface, mac_addr, br_name)
-
-# br_name = driver.get_br_name(port_id)
 
 print br_name, port_name, port_id, net_name, nw_id
