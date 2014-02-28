@@ -19,7 +19,8 @@ import neutronclient.common.exceptions as qcexp
 # Arg 4: tenant name
 # Arg 5: uuid of VM
 # Arg 6: MAC address of tap interface
-# Arg 7: name of tap interface 
+# Arg 7: hostname
+# Arg 8: name of tap interface 
 
 host = sys.argv[1]
 user = sys.argv[2]
@@ -27,7 +28,8 @@ pw = sys.argv[3]
 tenant = sys.argv[4]
 vm_uuid = sys.argv[5]
 mac_addr = sys.argv[6]
-interface = sys.argv[7]
+hostname = sys.argv[7]
+interface = sys.argv[8]
 
 KEYSTONE_URL='http://' + host + ':5000/v2.0'
  
@@ -44,7 +46,6 @@ except qcexp.NeutronClientException as e:
     print >> sys.stderr, 'Argument List:', str(sys.argv)
     exit(1)
 
-hostname = socket.gethostname()
 p_spec = {'port': {'admin_state_up': True,
                    'name': port_name,
                    'network_id': nw_id,
