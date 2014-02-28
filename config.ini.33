@@ -7,7 +7,8 @@ VERS="3.12"
 UUID="999a76ef-1111-2689-1234-b12a3c4d2a00"
       
 IMAGE="/home/openstack/csr/csr$VERS-20140112.img"
-ISO="/home/openstack/csr/$VERS/csr1000v-universalk9.BLD_V154_2_S_XE312_THROTTLE_LATEST_20140112_200024.iso"
+ISO="/home/openstack/csr/$VERS/csr1000v-universalk9.BLD_V154_2_S_XE312_THROTTLE_LATEST_20140221_080134-std.iso"
+# csr1000v-universalk9.BLD_V154_2_S_XE312_THROTTLE_LATEST_20140112_200024.iso"
 
 MACADDR_ETH0="52:54:25:91:fe:40" # mgmt 
 MACADDR_ETH1="52:54:25:91:fe:41" # t1:1
