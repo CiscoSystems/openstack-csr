@@ -4,14 +4,11 @@ import sys
 
 import nova.openstack.common.gettextutils as gtutil
 gtutil.install('')
-# from nova.openstack.common import log as logging
 import nova.virt.libvirt.vif as vif_driver
 from nova.network import linux_net
 from nova.network import model as network_model
 from neutronclient.neutron import client as qclient
 import neutronclient.common.exceptions as qcexp
-
-# LOG = logging.getLogger(__name__)
 
 # Arg 1: controller host
 # Arg 2: name of admin user
@@ -25,9 +22,6 @@ import neutronclient.common.exceptions as qcexp
 # Arg 10: id of port  
 # Arg 11: name of net
 # Arg 12: id of net
-
-#print 'Number of arguments:', len(sys.argv), 'arguments.'
-#print 'Argument List:', str(sys.argv)
 
 host = sys.argv[1]
 user = sys.argv[2]

@@ -5,13 +5,10 @@ import sys
 from oslo.config import cfg
 import neutron.openstack.common.gettextutils as gtutil
 gtutil.install('')
-# from neutron.openstack.common import log as logging
 import neutron.agent.linux.interface as vif_driver
 from neutronclient.neutron import client as qclient
 import neutronclient.common.exceptions as qcexp
 from neutron.agent.common import config
-
-# LOG = logging.getLogger(__name__)
 
 # Arg 1: controller host
 # Arg 2: name of admin user

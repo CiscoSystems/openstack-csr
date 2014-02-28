@@ -28,4 +28,4 @@ kvm -m 8192 -name $NAME \
 -serial telnet:localhost:4444,server,nowait \
 -boot d \
 -vga cirrus \
--vnc 14.0.3.33:0
+-vnc $HOST:0
