@@ -1,17 +1,14 @@
 #!/usr/bin/python
 
-import socket
 import sys
 
-import nova.openstack.common.gettextutils as gtutil
+from oslo.config import cfg
+import neutron.openstack.common.gettextutils as gtutil
 gtutil.install('')
-import nova.virt.libvirt.vif as vif_driver
-from nova.network import linux_net
-from nova.network import model as network_model
+import neutron.agent.linux.interface as vif_driver
 from neutronclient.neutron import client as qclient
 import neutronclient.common.exceptions as qcexp
-
-# LOG = logging.getLogger(__name__)
+from neutron.agent.common import config
 
 # Arg 1: controller host
 # Arg 2: name of admin user
@@ -19,8 +16,7 @@ import neutronclient.common.exceptions as qcexp
 # Arg 4: tenant name
 # Arg 5: uuid of VM
 # Arg 6: MAC address of tap interface
-# Arg 7: hostname
-# Arg 8: name of tap interface 
+# Arg 7: name of tap interface 
 
 host = sys.argv[1]
 user = sys.argv[2]
@@ -28,8 +24,7 @@ pw = sys.argv[3]
 tenant = sys.argv[4]
 vm_uuid = sys.argv[5]
 mac_addr = sys.argv[6]
-hostname = sys.argv[7]
-interface = sys.argv[8]
+interface = sys.argv[7]
 
 KEYSTONE_URL='http://' + host + ':5000/v2.0'
  
@@ -50,7 +45,6 @@ p_spec = {'port': {'admin_state_up': True,
                    'name': port_name,
                    'network_id': nw_id,
                    'mac_address': mac_addr,
-                   'binding:host_id': hostname,
                    'device_id': vm_uuid,
                    'device_owner': 'compute:None'}}
 
@@ -61,20 +55,13 @@ except qcexp.NeutronClientException as e:
     exit(1)
 
 port_id = port['port']['id']
+br_name = 'br-int'
 
-instance = {'uuid': vm_uuid}
-network = {'bridge': 'br-int'}
-vif = {'id': port_id,
-       'address': mac_addr,
-       'network': network,
-       'type': network_model.VIF_TYPE_OVS}
+conf = cfg.CONF
+config.register_root_helper(conf)
+conf.register_opts(vif_driver.OPTS)
 
-# For OVS
-# driver = vif_driver.LibvirtHybridOVSBridgeDriver({})
-# For ML2 plugin
-driver = vif_driver.LibvirtGenericVIFDriver({})
-driver.plug(instance, vif)
-
-br_name = driver.get_br_name(port_id)
+driver = vif_driver.OVSInterfaceDriver(cfg.CONF)
+driver.plug(nw_id, port_id, interface, mac_addr, br_name)
 
 print br_name, port_name, port_id, net_name, nw_id
