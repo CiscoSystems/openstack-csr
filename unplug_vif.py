@@ -2,13 +2,13 @@
 
 import sys
 
-import nova.openstack.common.gettextutils as gtutil
+from oslo.config import cfg
+import neutron.openstack.common.gettextutils as gtutil
 gtutil.install('')
-import nova.virt.libvirt.vif as vif_driver
-from nova.network import linux_net
-from nova.network import model as network_model
+import neutron.agent.linux.interface as vif_driver
 from neutronclient.neutron import client as qclient
 import neutronclient.common.exceptions as qcexp
+from neutron.agent.common import config
 
 # Arg 1: controller host
 # Arg 2: name of admin user
@@ -33,23 +33,15 @@ vm_uuid = sys.argv[7]
 port_id = sys.argv[10]
 nw_id = sys.argv[12]
 
-instance = {'uuid': vm_uuid}
-mapping = {'vif_uuid': port_id,
-           'mac': mac_addr}
-network = {}
-network = {'bridge': 'br-int'}
-vif = {'id': port_id,
-       'address': mac_addr,
-       'network': network,
-       'type': network_model.VIF_TYPE_OVS}
+br_name = 'br-int'
 
-# For OVS
-# driver = vif_driver.LibvirtHybridOVSBridgeDriver({})
-# For ML2
-driver = vif_driver.LibvirtGenericVIFDriver({})
-print ("Unplugging %(inst)s for port %(port)s (%(mac)s) on br-int" % 
-       {'inst': vm_uuid, 'port': port_id, 'mac': mac_addr})
-driver.unplug(instance, vif)
+conf = cfg.CONF
+config.register_root_helper(conf)
+conf.register_opts(vif_driver.OPTS)
+
+driver = vif_driver.OVSInterfaceDriver(cfg.CONF)
+print "Unplug %s for %s" % (interface, br_name)
+driver.unplug(interface, br_name)
 
 KEYSTONE_URL='http://' + host + ':5000/v2.0'
  
