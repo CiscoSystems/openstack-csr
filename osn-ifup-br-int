@@ -16,5 +16,7 @@ echo "$1 ${if_mac} ${UUID} $info_str" >> .instance_info
 IFS=' ' read -a info <<< "$info_str"
 switch=${info[0]}
 echo "Plugging interface: $1 into switch: ${switch}"
-ovs-vsctl add-port ${switch} $1
-
+# For Neutron only
+# ovs-vsctl add-port ${switch} $1
+# For Nova
+brctl addif ${switch} $1

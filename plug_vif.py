@@ -1,14 +1,17 @@
 #!/usr/bin/python
 
+import socket
 import sys
 
-from oslo.config import cfg
-import neutron.openstack.common.gettextutils as gtutil
+import nova.openstack.common.gettextutils as gtutil
 gtutil.install('')
-import neutron.agent.linux.interface as vif_driver
+import nova.virt.libvirt.vif as vif_driver
+from nova.network import linux_net
+from nova.network import model as network_model
 from neutronclient.neutron import client as qclient
 import neutronclient.common.exceptions as qcexp
-from neutron.agent.common import config
+
+# LOG = logging.getLogger(__name__)
 
 # Arg 1: controller host
 # Arg 2: name of admin user
@@ -16,7 +19,7 @@ from neutron.agent.common import config
 # Arg 4: tenant name
 # Arg 5: uuid of VM
 # Arg 6: MAC address of tap interface
-# Arg 7: hostname for binding
+# Arg 7: hostname
 # Arg 8: name of tap interface 
 
 host = sys.argv[1]
@@ -58,13 +61,24 @@ except qcexp.NeutronClientException as e:
     exit(1)
 
 port_id = port['port']['id']
-br_name = 'br-int'
 
-conf = cfg.CONF
-config.register_root_helper(conf)
-conf.register_opts(vif_driver.OPTS)
+instance = {'uuid': vm_uuid}
+network = {'bridge': 'br-int'}
 
-driver = vif_driver.OVSInterfaceDriver(cfg.CONF)
-driver.plug(nw_id, port_id, interface, mac_addr, br_name)
+class VeryDangerousHack(network_model.VIF):
+    def __init__(self, port_id, mac_addr, network):
+        super(VeryDangerousHack, self).__init__(
+            id=port_id, address=mac_addr, network=network,
+            type=network_model.VIF_TYPE_OVS,
+            # details={'ovs_hybrid_plug': False, 'port_filter': False},
+            active=True)
+
+vif = VeryDangerousHack(port_id, mac_addr, network)
+
+# For ML2 plugin
+driver = vif_driver.LibvirtGenericVIFDriver({})
+driver.plug(instance, vif)
+
+br_name = driver.get_br_name(port_id)
 
 print br_name, port_name, port_id, net_name, nw_id
