@@ -13,7 +13,7 @@ IFNAME_ETH0=$NAME$VERS"tap0"
 IFNAME_ETH1=$NAME$VERS"tap1"
 IFNAME_ETH2=$NAME$VERS"tap2"
 
-echo "Booting $NAME on D for install"
+echo "Booting $NAME on D for install, use $HOST:0 for VNC access to console"
  
 kvm -m 8192 -name $NAME \
 -smp 4 \
